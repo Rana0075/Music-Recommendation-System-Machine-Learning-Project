@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Selector</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dropdown-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        form div {
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        // Function to update artists based on mood
+        function updateGenres() {
+            const moodSelect = document.getElementById('mood');
+            const genreSelect = document.getElementById('genre');
+            const artistSelect = document.getElementById('artist');
+
+            const selectedMood = moodSelect.value;
+
+            // Clear previous genre and artist options
+            genreSelect.innerHTML = '';
+            artistSelect.innerHTML = '';
+
+            // Get the genres for the selected mood from the data passed by Flask
+            const genres = musicData[selectedMood];
+
+            // Populate genre dropdown
+            for (const genre in genres) {
+                const option = document.createElement('option');
+                option.value = genre;
+                option.textContent = genre;
+                genreSelect.appendChild(option);
+            }
+        }
+
+        // Function to update artists based on genre
+        function updateArtists() {
+            const genreSelect = document.getElementById('genre');
+            const artistSelect = document.getElementById('artist');
+
+            const selectedGenre = genreSelect.value;
+
+            // Clear previous artist options
+            artistSelect.innerHTML = '';
+
+            // Get artists for the selected genre
+            const artists = musicData[document.getElementById('mood').value][selectedGenre];
+
+            // Populate artist dropdown
+            for (const artist of artists) {
+                const option = document.createElement('option');
+                option.value = artist;
+                option.textContent = artist;
+                artistSelect.appendChild(option);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="banner">
+        <div class="navbar">
+        <img src="https://static.vecteezy.com/system/resources/previews/008/653/792/non_2x/music-man-gamer-line-pop-art-potrait-logo-colorful-design-with-dark-background-abstract-illustration-isolated-black-background-for-t-shirt-poster-clothing-merch-apparel-badge-design-vector.jpg" class="logo">
+        <ul>
+            <li><a href="#">HOME</a></li>
+            <li><a href="#">GENRE</a></li>
+            <li><a href="#">ARTIST</a></li>
+            <li><a href="#">ALBUM</a></li>
+        </ul>
+    </div>
+
+    <form>
+    <div class="content">
+        <div>
+            <h1><label for="username">How do I recognize you?</label></h1>
+            <input type="text" id="username" placeholder="Enter Username">
+        <p>The website will recommend you an artist of your choice with his/her albums on the basis of your current mood.</p>
+        </div>
+        
+        <div>
+            <h2><label for="mood">Hey! What's your mood right now?</label></h2>
+            <br>
+            <select id="mood" onchange="updateGenres()">
+                <option value="Happy & Uplifting">Happy & Uplifting</option>
+                <option value="Sad & Melancholic">Sad & Melancholic</option>
+                <option value="Motivated & Empowering">Motivated & Empowering</option>
+                <option value="Relaxed & Chill">Relaxed & Chill</option>
+                <option value="Romantic">Romantic</option>
+
+            </select>
+        </div>
+
+        <div>
+            <h3><label for="genre">Please select a genre from the list!</label></h3>
+            <br>
+            <select id="genre" onchange="updateArtists()">
+                <option value="">Select a mood first</option>
+            </select>
+        </div>
+
+        <div>
+            <h4><label for="artist">Finaly!!! Here's your favourite artist...</label></h4>
+            <br>
+            <select id="artist">
+                <option value="">Select a genre first</option>
+            </select>
+        </div>
+
+        <div>
+            <button><input type="submit" value="Submit"></button>
+        </div></div>
+    
+    </form>
+
+
+    <script>
+        
+        const musicData = {{ music_data|tojson }};
+    </script>
+    </div>
+</body>
+</html>
